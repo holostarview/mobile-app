@@ -145,7 +145,6 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-geolocation-service')
     implementation project(':react-native-sensor-manager')
     compile project(':react-native-sensor-manager')
     implementation fileTree(dir: "libs", include: ["*.jar"])
