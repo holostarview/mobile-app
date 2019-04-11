@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, DeviceEventEmitter, Image, Animated, PermissionsAndroid} from 'react-native';
+import {StyleSheet, Text, View, DeviceEventEmitter, Image, Animated, PermissionsAndroid, Button} from 'react-native';
 import {SensorManager} from 'NativeModules';
-
+import Bluetooth from 'react-native-bluetooth-serial';
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -18,7 +18,8 @@ export default class App extends Component<Props> {
       longitude: 0,
       latitude: 0
     },
-    rotation: new Animated.Value(0)
+    rotation: new Animated.Value(0),
+    devices: []
   };
 
   async componentDidMount (): void {
@@ -73,6 +74,37 @@ export default class App extends Component<Props> {
     navigator.geolocation.clearWatch(this.watchId);
   }
 
+  async onPressSend() {
+    try {
+      const isBluetoothEnabled = await Bluetooth.isEnabled();
+
+      if (!isBluetoothEnabled) {
+        try {
+          await Bluetooth.requestEnable()
+        } catch (e) {
+          alert('You need to turn the bluetooth on to send GPS data to HoloLense');
+          return;
+        }
+      }
+
+      try {
+        const message = {
+          orientation: this.state.orientation,
+          position: this.state.position
+        };
+
+        await Bluetooth.write(JSON.stringify(message))
+
+        alert('Successfully sent to the device')
+      } catch (e) {
+        alert('Error while sending data to the device')
+        alert(e.message);
+      }
+    } catch (e) {
+      alert(JSON.stringify(e));
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -101,6 +133,8 @@ export default class App extends Component<Props> {
         <Text style={styles.text}>Lat: {this.state.position.latitude}</Text>
         <Text style={styles.text}>Alt: {this.state.position.altitude}</Text>
         <Text style={styles.text}>Acc: {this.state.position.accuracy}</Text>
+
+        <Button title={'Send to HoloLense'} onPress={() => this.onPressSend()}></Button>
       </View>
     );
   }

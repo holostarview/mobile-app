@@ -17,6 +17,11 @@
 
 Just run `react-native run-android` command with android device connected
 
+### Troubleshooting
+
+You might face the issue with react-native-bluetooth-serial package. 
+To resolve it, remove `@Override` stereotype for createJSModules method in `node_modules/react-native-bluetooth-serial/android/src/main/java/com/rusel/RCTBluetoothSerial/RCTBluetoothSerialPackage.java` file
+
 ### Release
 
 1. You need to generate keystore to sign the apk and put it to sources. Tutorial can be found [here](https://facebook.github.io/react-native/docs/signed-apk-android)

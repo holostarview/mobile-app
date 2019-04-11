@@ -145,6 +145,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-bluetooth-serial')
     implementation project(':react-native-sensor-manager')
     compile project(':react-native-sensor-manager')
     implementation fileTree(dir: "libs", include: ["*.jar"])
